@@ -66,13 +66,13 @@ void definemacros( std::ostringstream& data, std::string& includename, bool defi
 	data << "#define wxMEMORY_BITMAP( name ) _wxConvertMemoryToBitmap( name, sizeof( name ) )" << std::endl;
 	data << "#define wxMEMORY_BITMAPEX( name, type ) _wxConvertMemoryToBitmap( name, sizeof( name ), type )" << std::endl << std::endl;
 
-	data << "inline wxImage _wxConvertMemoryToImage(const unsigned char* data, int length, long type = wxBITMAP_TYPE_ANY )" << std::endl;
+	data << "inline wxImage _wxConvertMemoryToImage(const unsigned char* data, int length, wxBitmapType type = wxBITMAP_TYPE_ANY )" << std::endl;
 	data << "{" << std::endl;
 	data << "	wxMemoryInputStream stream( data, length );" << std::endl;
 	data << "	return wxImage( stream, type, -1 );" << std::endl;
 	data << "}" << std::endl << std::endl;
 
-	data << "inline wxBitmap _wxConvertMemoryToBitmap(const unsigned char* data, int length, long type = wxBITMAP_TYPE_ANY )" << std::endl;
+	data << "inline wxBitmap _wxConvertMemoryToBitmap(const unsigned char* data, int length, wxBitmapType type = wxBITMAP_TYPE_ANY )" << std::endl;
 	data << "{" << std::endl;
 	data << "	wxMemoryInputStream stream( data, length );" << std::endl;
 	data << "	return wxBitmap( wxImage( stream, type, -1 ), -1 );" << std::endl;
@@ -84,7 +84,7 @@ static std::vector<std::string> list;
 void definefile( std::ostringstream& data, fs::ifstream& input, std::string& name, bool useconst = false )
 {
 	/* Check if already defined */
-	std::vector<std::string>::iterator search = std::find( list.begin(), list.end(), name );
+	const auto search = std::find( list.begin(), list.end(), name );
 	if ( search == list.end() )
 	{
 		list.push_back( name );
@@ -325,7 +325,7 @@ int _tmain(int argc, _TCHAR* argv[])
 									fs::ifstream input( dir_itr->path(), std::ios::in | std::ios::binary | std::ios::ate );
 									input.rdbuf()->pubsetbuf( inbuffer, BUFFER_SIZE ); 
 
-									std::string file( dir_itr->path().leaf() );
+									std::string file( dir_itr->path().leaf().string() );
 
 									if ( input.is_open() )
 									{
